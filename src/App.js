@@ -7,11 +7,15 @@ export default function App() {
     setItems((items) => [...items, item]);
   }
 
+  function handleDeleteItem(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItem={handleAddItem} />
-      <CheckList items={items} />
+      <CheckList items={items} onDeleteItem={handleDeleteItem} />
       <Stats />
     </div>
   );
@@ -32,6 +36,7 @@ function Form({ onAddItem }) {
     if (!title) return;
 
     const newItem = {
+      id: Date.now(),
       title,
       done: false,
     };
@@ -60,25 +65,25 @@ function Form({ onAddItem }) {
   );
 }
 
-function CheckList({ items }) {
+function CheckList({ items, onDeleteItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} />
+          <Item item={item} onDeleteItem={onDeleteItem} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return (
     <li>
       <span style={item.done ? { textDecoration: "line-through" } : {}}>
         {item.title}
       </span>
-      <button>❌</button>
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
